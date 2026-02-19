@@ -1,0 +1,365 @@
+basePath: /api/v1
+definitions:
+  dto.CompletenessResponse:
+    properties:
+      dataset_results:
+        additionalProperties:
+          $ref: '#/definitions/dto.DatasetCompletenessResult'
+        description: DatasetResults maps a dataset reference to its individual completeness
+          result.
+        type: object
+      missing_optional:
+        items:
+          type: string
+        type: array
+      missing_required:
+        items:
+          type: string
+        type: array
+      model_id:
+        type: string
+      passed:
+        type: integer
+      score:
+        type: number
+      total:
+        type: integer
+    type: object
+  dto.DatasetCompletenessResult:
+    properties:
+      dataset_ref:
+        type: string
+      missing_optional:
+        items:
+          type: string
+        type: array
+      missing_required:
+        items:
+          type: string
+        type: array
+      passed:
+        type: integer
+      score:
+        type: number
+      total:
+        type: integer
+    type: object
+  dto.DatasetValidateResult:
+    properties:
+      completeness_score:
+        type: number
+      dataset_ref:
+        type: string
+      errors:
+        items:
+          type: string
+        type: array
+      missing_optional:
+        items:
+          type: string
+        type: array
+      missing_required:
+        items:
+          type: string
+        type: array
+      warnings:
+        items:
+          type: string
+        type: array
+    type: object
+  dto.ErrorResponse:
+    properties:
+      details:
+        type: string
+      error:
+        type: string
+    type: object
+  dto.GenerateFromModelIDsRequest:
+    properties:
+      hf_token:
+        description: HFToken is an optional HuggingFace API token for private/gated
+          models.
+        type: string
+      model_ids:
+        description: ModelIDs is the list of HuggingFace model identifiers (e.g. "org/model").
+        items:
+          type: string
+        minItems: 1
+        type: array
+      timeout_seconds:
+        description: TimeoutSeconds is the per-model fetch timeout (default 30 s when
+          0).
+        type: integer
+    required:
+    - model_ids
+    type: object
+  dto.GenerateResponse:
+    properties:
+      boms:
+        items:
+          $ref: '#/definitions/dto.GeneratedBOM'
+        type: array
+      count:
+        type: integer
+    type: object
+  dto.GeneratedBOM:
+    properties:
+      bom:
+        items:
+          type: integer
+        type: array
+      model_id:
+        type: string
+      model_name:
+        type: string
+    type: object
+  dto.MergeResponse:
+    properties:
+      aibom_component_count:
+        type: integer
+      dataset_components:
+        items:
+          type: string
+        type: array
+      duplicates_removed:
+        type: integer
+      merged_bom:
+        items:
+          type: integer
+        type: array
+      metadata_component:
+        type: string
+      model_components:
+        items:
+          type: string
+        type: array
+      sbom_component_count:
+        type: integer
+      sbom_components:
+        items:
+          type: string
+        type: array
+    type: object
+  dto.ValidateResponse:
+    properties:
+      completeness_score:
+        type: number
+      dataset_results:
+        additionalProperties:
+          $ref: '#/definitions/dto.DatasetValidateResult'
+        type: object
+      errors:
+        items:
+          type: string
+        type: array
+      missing_optional:
+        items:
+          type: string
+        type: array
+      missing_required:
+        items:
+          type: string
+        type: array
+      model_id:
+        type: string
+      valid:
+        type: boolean
+      warnings:
+        items:
+          type: string
+        type: array
+    type: object
+  handlers.HealthResponse:
+    properties:
+      go_arch:
+        type: string
+      status:
+        type: string
+      version:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    name: IDLab Discover
+    url: https://github.com/idlab-discover/AIBoMGen-cli
+  description: HTTP API for generating, assessing and merging CycloneDX AI/ML Bills
+    of Materials (AIBOMs) using the AIBoMGen-cli library.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  title: AIBoMGen REST API
+  version: "1.0"
+paths:
+  /completeness:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 'Upload a CycloneDX BOM (JSON or XML) and receive a completeness
+        report: overall score, passed/total field counts, missing required/optional
+        fields, and per-dataset breakdown.'
+      parameters:
+      - description: CycloneDX BOM file (JSON or XML)
+        in: formData
+        name: bom
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.CompletenessResponse'
+        "400":
+          description: Missing BOM file
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "422":
+          description: BOM parse error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Assess BOM completeness
+      tags:
+      - completeness
+  /generate:
+    post:
+      consumes:
+      - application/json
+      description: Fetches metadata from HuggingFace Hub for each supplied model ID
+        and produces a CycloneDX AIBOM per model.
+      parameters:
+      - description: Model IDs and options
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.GenerateFromModelIDsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GenerateResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Generation error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Generate AIBOMs from HuggingFace model IDs
+      tags:
+      - generate
+  /health:
+    get:
+      description: Returns a liveness signal with Go runtime metadata.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.HealthResponse'
+      summary: Health check
+      tags:
+      - system
+  /merge/aiboms-with-sbom:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Merges one or more AIBOMs into a base SBOM. This is the recommended
+        workflow when integrating AI/ML model metadata into an existing software BOM.
+      parameters:
+      - description: Base SBOM file
+        in: formData
+        name: sbom
+        required: true
+        type: file
+      - collectionFormat: csv
+        description: One or more AIBOM files (select multiple in the file picker)
+        in: formData
+        items:
+          type: file
+        name: aibom[]
+        required: true
+        type: array
+      - description: Label for the SBOM in merged metadata
+        in: formData
+        name: sbom_name
+        type: string
+      - description: Remove duplicate components (default false)
+        in: formData
+        name: deduplicate_components
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.MergeResponse'
+        "400":
+          description: Missing required file(s)
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "422":
+          description: BOM parse error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Merge error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Merge AIBOMs into an SBOM
+      tags:
+      - merge
+  /validate:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 'Upload a CycloneDX BOM and receive a full validation report: schema
+        and semantic checks, completeness score, errors, warnings, and per-dataset
+        results. Returns HTTP 422 when the BOM is invalid.'
+      parameters:
+      - description: CycloneDX BOM file (JSON or XML)
+        in: formData
+        name: bom
+        required: true
+        type: file
+      - description: Fail if required fields are missing (default false)
+        in: formData
+        name: strict_mode
+        type: boolean
+      - description: Minimum acceptable completeness score 0–1 (default 0.0)
+        in: formData
+        name: min_completeness_score
+        type: number
+      - description: Validate model card fields (default false)
+        in: formData
+        name: check_model_card
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: BOM is valid
+          schema:
+            $ref: '#/definitions/dto.ValidateResponse'
+        "400":
+          description: Missing BOM file
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "422":
+          description: BOM is invalid
+          schema:
+            $ref: '#/definitions/dto.ValidateResponse'
+      summary: Validate a CycloneDX BOM
+      tags:
+      - validate
+schemes:
+- http
+- https
+swagger: "2.0"

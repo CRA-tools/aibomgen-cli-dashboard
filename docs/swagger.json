@@ -1,0 +1,536 @@
+{
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "HTTP API for generating, assessing and merging CycloneDX AI/ML Bills of Materials (AIBOMs) using the AIBoMGen-cli library.",
+        "title": "AIBoMGen REST API",
+        "contact": {
+            "name": "IDLab Discover",
+            "url": "https://github.com/idlab-discover/AIBoMGen-cli"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api/v1",
+    "paths": {
+        "/completeness": {
+            "post": {
+                "description": "Upload a CycloneDX BOM (JSON or XML) and receive a completeness report: overall score, passed/total field counts, missing required/optional fields, and per-dataset breakdown.",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "completeness"
+                ],
+                "summary": "Assess BOM completeness",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "CycloneDX BOM file (JSON or XML)",
+                        "name": "bom",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.CompletenessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Missing BOM file",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "BOM parse error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/generate": {
+            "post": {
+                "description": "Fetches metadata from HuggingFace Hub for each supplied model ID and produces a CycloneDX AIBOM per model.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "generate"
+                ],
+                "summary": "Generate AIBOMs from HuggingFace model IDs",
+                "parameters": [
+                    {
+                        "description": "Model IDs and options",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.GenerateFromModelIDsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GenerateResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Generation error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "description": "Returns a liveness signal with Go runtime metadata.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "system"
+                ],
+                "summary": "Health check",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.HealthResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/merge/aiboms-with-sbom": {
+            "post": {
+                "description": "Merges one or more AIBOMs into a base SBOM. This is the recommended workflow when integrating AI/ML model metadata into an existing software BOM.",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "merge"
+                ],
+                "summary": "Merge AIBOMs into an SBOM",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "Base SBOM file",
+                        "name": "sbom",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "file"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "One or more AIBOM files (select multiple in the file picker)",
+                        "name": "aibom[]",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Label for the SBOM in merged metadata",
+                        "name": "sbom_name",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Remove duplicate components (default false)",
+                        "name": "deduplicate_components",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.MergeResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Missing required file(s)",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "BOM parse error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Merge error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/validate": {
+            "post": {
+                "description": "Upload a CycloneDX BOM and receive a full validation report: schema and semantic checks, completeness score, errors, warnings, and per-dataset results. Returns HTTP 422 when the BOM is invalid.",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "validate"
+                ],
+                "summary": "Validate a CycloneDX BOM",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "CycloneDX BOM file (JSON or XML)",
+                        "name": "bom",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Fail if required fields are missing (default false)",
+                        "name": "strict_mode",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "number",
+                        "description": "Minimum acceptable completeness score 0–1 (default 0.0)",
+                        "name": "min_completeness_score",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Validate model card fields (default false)",
+                        "name": "check_model_card",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "BOM is valid",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ValidateResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Missing BOM file",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "BOM is invalid",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ValidateResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dto.CompletenessResponse": {
+            "type": "object",
+            "properties": {
+                "dataset_results": {
+                    "description": "DatasetResults maps a dataset reference to its individual completeness result.",
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/dto.DatasetCompletenessResult"
+                    }
+                },
+                "missing_optional": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "missing_required": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "model_id": {
+                    "type": "string"
+                },
+                "passed": {
+                    "type": "integer"
+                },
+                "score": {
+                    "type": "number"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.DatasetCompletenessResult": {
+            "type": "object",
+            "properties": {
+                "dataset_ref": {
+                    "type": "string"
+                },
+                "missing_optional": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "missing_required": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "passed": {
+                    "type": "integer"
+                },
+                "score": {
+                    "type": "number"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.DatasetValidateResult": {
+            "type": "object",
+            "properties": {
+                "completeness_score": {
+                    "type": "number"
+                },
+                "dataset_ref": {
+                    "type": "string"
+                },
+                "errors": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "missing_optional": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "missing_required": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "warnings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "dto.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "details": {
+                    "type": "string"
+                },
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.GenerateFromModelIDsRequest": {
+            "type": "object",
+            "required": [
+                "model_ids"
+            ],
+            "properties": {
+                "hf_token": {
+                    "description": "HFToken is an optional HuggingFace API token for private/gated models.",
+                    "type": "string"
+                },
+                "model_ids": {
+                    "description": "ModelIDs is the list of HuggingFace model identifiers (e.g. \"org/model\").",
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "timeout_seconds": {
+                    "description": "TimeoutSeconds is the per-model fetch timeout (default 30 s when 0).",
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.GenerateResponse": {
+            "type": "object",
+            "properties": {
+                "boms": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.GeneratedBOM"
+                    }
+                },
+                "count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.GeneratedBOM": {
+            "type": "object",
+            "properties": {
+                "bom": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "model_id": {
+                    "type": "string"
+                },
+                "model_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.MergeResponse": {
+            "type": "object",
+            "properties": {
+                "aibom_component_count": {
+                    "type": "integer"
+                },
+                "dataset_components": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "duplicates_removed": {
+                    "type": "integer"
+                },
+                "merged_bom": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "metadata_component": {
+                    "type": "string"
+                },
+                "model_components": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "sbom_component_count": {
+                    "type": "integer"
+                },
+                "sbom_components": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "dto.ValidateResponse": {
+            "type": "object",
+            "properties": {
+                "completeness_score": {
+                    "type": "number"
+                },
+                "dataset_results": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/dto.DatasetValidateResult"
+                    }
+                },
+                "errors": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "missing_optional": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "missing_required": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "model_id": {
+                    "type": "string"
+                },
+                "valid": {
+                    "type": "boolean"
+                },
+                "warnings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "handlers.HealthResponse": {
+            "type": "object",
+            "properties": {
+                "go_arch": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
