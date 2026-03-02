@@ -33,7 +33,7 @@ export function CompletenessPanel() {
         onChange={setFile}
       />
 
-      <Button type="submit" disabled={isPending} className="w-full">
+      <Button type="submit" disabled={isPending || file.length === 0} className="w-full">
         {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
         {isPending ? "Checking…" : "Check Completeness"}
       </Button>

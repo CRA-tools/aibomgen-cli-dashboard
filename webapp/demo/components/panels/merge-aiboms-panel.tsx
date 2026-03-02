@@ -72,7 +72,7 @@ export function MergeAibomsPanel() {
         </label>
       </div>
 
-      <Button type="submit" disabled={isPending} className="w-full">
+      <Button type="submit" disabled={isPending || !sbom[0] || aiboms.length === 0} className="w-full">
         {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
         {isPending ? "Merging…" : "Merge AIBOMs into SBOM"}
       </Button>
