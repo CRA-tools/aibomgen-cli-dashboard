@@ -66,6 +66,9 @@ export function CompletenessPanel() {
                     {dr.missing_required.length > 0 && (
                       <FieldList title="Missing Required" variant="destructive" fields={dr.missing_required} />
                     )}
+                    {dr.missing_optional.length > 0 && (
+                      <FieldList title="Missing Optional" variant="outline" fields={dr.missing_optional} />
+                    )}
                   </div>
                 ))}
               </div>

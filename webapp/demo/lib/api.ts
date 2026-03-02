@@ -76,12 +76,11 @@ export const api = {
   mergeAIBOMsWithSBOM(
     sbom: File,
     aiboms: File[],
-    opts?: { sbom_name?: string; deduplicate_components?: boolean }
+    opts?: { deduplicate_components?: boolean }
   ): Promise<MergeResponse> {
     const form = new FormData();
     form.append("sbom", sbom);
     for (const f of aiboms) form.append("aibom[]", f);
-    if (opts?.sbom_name)                 form.append("sbom_name", opts.sbom_name);
     if (opts?.deduplicate_components)    form.append("deduplicate_components", "true");
     return apiFetch("/merge/aiboms-with-sbom", { method: "POST", body: form });
   },

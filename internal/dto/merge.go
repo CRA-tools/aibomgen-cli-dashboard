@@ -5,8 +5,6 @@ import "encoding/json"
 // MergeOptions carries configuration for the merge operation.
 // The BOM files are supplied as multipart file uploads.
 type MergeOptions struct {
-	// SBOMName is used to identify the SBOM in merged metadata.
-	SBOMName string `json:"sbom_name" form:"sbom_name"`
 	// DeduplicateComponents removes duplicate components based on BOM-ref.
 	DeduplicateComponents bool `json:"deduplicate_components" form:"deduplicate_components"`
 }

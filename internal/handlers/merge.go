@@ -20,7 +20,6 @@ import (
 // @Produce     json
 // @Param       sbom                   formData file   true  "Base SBOM file"
 // @Param       aibom[]                formData []file true  "One or more AIBOM files (select multiple in the file picker)"
-// @Param       sbom_name              formData string false "Label for the SBOM in merged metadata"
 // @Param       deduplicate_components formData bool   false "Remove duplicate components (default false)"
 // @Success     200 {object} dto.MergeResponse
 // @Failure     400 {object} dto.ErrorResponse "Missing required file(s)"
@@ -77,7 +76,6 @@ func MergeAIBOMsWithSBOM(c *gin.Context) {
 	_ = c.ShouldBind(&opts)
 
 	result, err := merger.MergeAIBOMsWithSBOM(sbomBOM, aiboms, merger.MergeOptions{
-		SBOMName:              opts.SBOMName,
 		DeduplicateComponents: opts.DeduplicateComponents,
 	})
 	if err != nil {

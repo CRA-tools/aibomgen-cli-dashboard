@@ -5,7 +5,7 @@ go 1.25.6
 require (
 	github.com/CycloneDX/cyclonedx-go v0.9.3
 	github.com/gin-gonic/gin v1.11.0
-	github.com/idlab-discover/AIBoMGen-cli v0.1.1-0.20260219123817-314898254c9c
+	github.com/idlab-discover/AIBoMGen-cli v0.1.1-0.20260302101642-3dc2e9b97962
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.1
 	github.com/swaggo/swag v1.16.6

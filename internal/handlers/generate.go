@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"context"
 	"net/http"
 	"time"
 
@@ -37,15 +36,12 @@ func GenerateFromModelIDs(c *gin.Context) {
 
 	timeout := resolveTimeout(req.TimeoutSeconds)
 
-	ctx, cancel := context.WithTimeout(c.Request.Context(), time.Duration(len(req.ModelIDs))*timeout+timeout)
-	defer cancel()
-
 	opts := generator.GenerateOptions{
 		HFToken: req.HFToken,
 		Timeout: timeout,
 	}
 
-	discovered, err := generator.BuildFromModelIDsWithProgress(ctx, req.ModelIDs, opts)
+	discovered, err := generator.BuildFromModelIDs(req.ModelIDs, opts)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, dto.ErrorResponse{
 			Error:   "generation failed",
