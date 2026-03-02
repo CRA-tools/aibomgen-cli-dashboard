@@ -1,4 +1,4 @@
-# AIBoMGen-cli-demo-frontend
+# AIBoMGen-cli-dashboard
 
 A demo showcasing the [AIBoMGen-cli](https://github.com/idlab-discover/AIBoMGen-cli) library. It consists of a lightweight Go REST API backed by the library and a Next.js web dashboard that lets users generate, validate, assess, and merge AI Bills of Materials (AIBOMs).
 
