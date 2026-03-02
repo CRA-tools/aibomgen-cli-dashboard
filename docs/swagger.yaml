@@ -105,9 +105,7 @@ definitions:
   dto.GeneratedBOM:
     properties:
       bom:
-        items:
-          type: integer
-        type: array
+        type: object
       model_id:
         type: string
       model_name:
@@ -124,9 +122,7 @@ definitions:
       duplicates_removed:
         type: integer
       merged_bom:
-        items:
-          type: integer
-        type: array
+        type: object
       metadata_component:
         type: string
       model_components:
@@ -286,10 +282,6 @@ paths:
         name: aibom[]
         required: true
         type: array
-      - description: Label for the SBOM in merged metadata
-        in: formData
-        name: sbom_name
-        type: string
       - description: Remove duplicate components (default false)
         in: formData
         name: deduplicate_components

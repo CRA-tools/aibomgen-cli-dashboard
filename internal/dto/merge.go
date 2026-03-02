@@ -11,7 +11,7 @@ type MergeOptions struct {
 
 // MergeResponse wraps the merged BOM and statistics.
 type MergeResponse struct {
-	MergedBOM           json.RawMessage `json:"merged_bom"`
+	MergedBOM           json.RawMessage `json:"merged_bom" swaggertype:"object"`
 	SBOMComponentCount  int             `json:"sbom_component_count"`
 	AIBOMComponentCount int             `json:"aibom_component_count"`
 	DuplicatesRemoved   int             `json:"duplicates_removed"`

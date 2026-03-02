@@ -17,7 +17,7 @@ type GenerateFromModelIDsRequest struct {
 type GeneratedBOM struct {
 	ModelID   string          `json:"model_id"`
 	ModelName string          `json:"model_name"`
-	BOM       json.RawMessage `json:"bom"`
+	BOM       json.RawMessage `json:"bom" swaggertype:"object"`
 }
 
 // GenerateResponse is the top-level response for all generate endpoints.

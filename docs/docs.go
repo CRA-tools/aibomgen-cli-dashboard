@@ -165,12 +165,6 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
-                        "description": "Label for the SBOM in merged metadata",
-                        "name": "sbom_name",
-                        "in": "formData"
-                    },
-                    {
                         "type": "boolean",
                         "description": "Remove duplicate components (default false)",
                         "name": "deduplicate_components",
@@ -422,10 +416,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "bom": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
+                    "type": "object"
                 },
                 "model_id": {
                     "type": "string"
@@ -451,10 +442,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "merged_bom": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
+                    "type": "object"
                 },
                 "metadata_component": {
                     "type": "string"
