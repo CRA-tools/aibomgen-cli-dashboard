@@ -6,9 +6,9 @@ import (
 
 	cdx "github.com/CycloneDX/cyclonedx-go"
 	"github.com/gin-gonic/gin"
-	"github.com/idlab-discover/AIBoMGen-cli-demo-frontend/internal/bomutil"
-	"github.com/idlab-discover/AIBoMGen-cli-demo-frontend/internal/dto"
-	"github.com/idlab-discover/AIBoMGen-cli/pkg/aibomgen/merger"
+	"github.com/CRA-tools/aibomgen-cli-dashboard/internal/bomutil"
+	"github.com/CRA-tools/aibomgen-cli-dashboard/internal/dto"
+	"github.com/idlab-discover/aibomgen-cli/pkg/aibomgen/merger"
 )
 
 // MergeAIBOMsWithSBOM handles POST /api/v1/merge/aiboms-with-sbom.

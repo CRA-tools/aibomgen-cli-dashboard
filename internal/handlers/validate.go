@@ -5,9 +5,9 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/idlab-discover/AIBoMGen-cli-demo-frontend/internal/bomutil"
-	"github.com/idlab-discover/AIBoMGen-cli-demo-frontend/internal/dto"
-	"github.com/idlab-discover/AIBoMGen-cli/pkg/aibomgen/validator"
+	"github.com/CRA-tools/aibomgen-cli-dashboard/internal/bomutil"
+	"github.com/CRA-tools/aibomgen-cli-dashboard/internal/dto"
+	"github.com/idlab-discover/aibomgen-cli/pkg/aibomgen/validator"
 )
 
 // Validate handles POST /api/v1/validate.

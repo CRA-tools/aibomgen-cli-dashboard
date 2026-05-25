@@ -11,7 +11,7 @@ import (
 	"path/filepath"
 
 	cdx "github.com/CycloneDX/cyclonedx-go"
-	"github.com/idlab-discover/AIBoMGen-cli/pkg/aibomgen/bomio"
+	"github.com/idlab-discover/aibomgen-cli/pkg/aibomgen/bomio"
 )
 
 // EncodeBOM serialises a CycloneDX BOM to JSON for embedding in API responses.

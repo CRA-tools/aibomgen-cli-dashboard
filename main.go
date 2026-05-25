@@ -5,8 +5,8 @@ import (
 	"log"
 	"os"
 
-	_ "github.com/idlab-discover/AIBoMGen-cli-demo-frontend/docs" // generated Swagger docs
-	"github.com/idlab-discover/AIBoMGen-cli-demo-frontend/internal/server"
+	_ "github.com/CRA-tools/aibomgen-cli-dashboard/docs" // generated Swagger docs
+	"github.com/CRA-tools/aibomgen-cli-dashboard/internal/server"
 )
 
 // @title           AIBoMGen REST API

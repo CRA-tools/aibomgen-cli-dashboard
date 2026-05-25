@@ -1,11 +1,11 @@
-module github.com/idlab-discover/AIBoMGen-cli-demo-frontend
+module github.com/CRA-tools/aibomgen-cli-dashboard
 
-go 1.25.6
+go 1.25.8
 
 require (
 	github.com/CycloneDX/cyclonedx-go v0.10.0
 	github.com/gin-gonic/gin v1.12.0
-	github.com/idlab-discover/AIBoMGen-cli v0.1.4-0.20260318104254-1cf8a50bcbfe
+	github.com/idlab-discover/aibomgen-cli v0.2.1
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.1
 	github.com/swaggo/swag v1.16.6

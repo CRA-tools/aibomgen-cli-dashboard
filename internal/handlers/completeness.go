@@ -5,9 +5,9 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/idlab-discover/AIBoMGen-cli-demo-frontend/internal/bomutil"
-	"github.com/idlab-discover/AIBoMGen-cli-demo-frontend/internal/dto"
-	"github.com/idlab-discover/AIBoMGen-cli/pkg/aibomgen/completeness"
+	"github.com/CRA-tools/aibomgen-cli-dashboard/internal/bomutil"
+	"github.com/CRA-tools/aibomgen-cli-dashboard/internal/dto"
+	"github.com/idlab-discover/aibomgen-cli/pkg/aibomgen/completeness"
 )
 
 // CheckCompleteness handles POST /api/v1/completeness.

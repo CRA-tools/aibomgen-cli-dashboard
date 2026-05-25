@@ -7,8 +7,8 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
-	"github.com/idlab-discover/AIBoMGen-cli-demo-frontend/internal/handlers"
-	"github.com/idlab-discover/AIBoMGen-cli-demo-frontend/internal/middleware"
+	"github.com/CRA-tools/aibomgen-cli-dashboard/internal/handlers"
+	"github.com/CRA-tools/aibomgen-cli-dashboard/internal/middleware"
 )
 
 // New creates and configures a Gin engine with all routes registered.
