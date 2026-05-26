@@ -4,8 +4,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { FilePicker } from "@/components/file-picker";
-import { ResultDisplay } from "@/components/result-display";
 import { useApiCall } from "@/hooks/use-api-call";
 import { api } from "@/lib/api";
 import type { MergeResponse } from "@/lib/types";
@@ -82,10 +82,10 @@ export function MergeAibomsPanel() {
           <div className="flex flex-wrap items-center gap-2">
             <Badge variant="outline">SBOM components: {data.sbom_component_count}</Badge>
             <Badge variant="outline">AIBOM components: {data.aibom_component_count}</Badge>
-            {data.model_components.length > 0 && (
+            {(data.model_components?.length ?? 0) > 0 && (
               <Badge variant="secondary">Models: {data.model_components.length}</Badge>
             )}
-            {data.dataset_components.length > 0 && (
+            {(data.dataset_components?.length ?? 0) > 0 && (
               <Badge variant="secondary">Datasets: {data.dataset_components.length}</Badge>
             )}
             {data.duplicates_removed > 0 && (
@@ -102,10 +102,21 @@ export function MergeAibomsPanel() {
               Download Merged BOM
             </Button>
           </div>
+
+          <div className="space-y-2">
+            <span className="text-sm font-medium text-muted-foreground">Merged BOM</span>
+            <ScrollArea className="h-72 w-full rounded-md border bg-muted/40">
+              <pre className="p-4 text-xs font-mono whitespace-pre-wrap break-all">
+                {JSON.stringify(data.merged_bom, null, 2)}
+              </pre>
+            </ScrollArea>
+          </div>
         </div>
       )}
 
-      <ResultDisplay data={data} error={error} label="Merged BOM" />
+      {error && (
+        <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</p>
+      )}
     </form>
   );
 }

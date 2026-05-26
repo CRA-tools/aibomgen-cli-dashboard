@@ -4,6 +4,7 @@ import type {
   GenerateResponse,
   CompletenessResponse,
   ValidateResponse,
+  VulnScanResponse,
   MergeResponse,
 } from "@/lib/types";
 
@@ -83,5 +84,17 @@ export const api = {
     for (const f of aiboms) form.append("aibom[]", f);
     if (opts?.deduplicate_components)    form.append("deduplicate_components", "true");
     return apiFetch("/merge/aiboms-with-sbom", { method: "POST", body: form });
+  },
+
+  vulnScan(
+    bomFile: File,
+    opts?: { hf_token?: string; timeout_seconds?: number; enrich?: boolean }
+  ): Promise<VulnScanResponse> {
+    const form = new FormData();
+    form.append("bom", bomFile);
+    if (opts?.hf_token)        form.append("hf_token", opts.hf_token);
+    if (opts?.timeout_seconds) form.append("timeout_seconds", String(opts.timeout_seconds));
+    if (opts?.enrich)          form.append("enrich", "true");
+    return apiFetch("/vuln-scan", { method: "POST", body: form });
   },
 } as const;

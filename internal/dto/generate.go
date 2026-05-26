@@ -11,6 +11,9 @@ type GenerateFromModelIDsRequest struct {
 	HFToken string `json:"hf_token"`
 	// TimeoutSeconds is the per-model fetch timeout (default 30 s when 0).
 	TimeoutSeconds int `json:"timeout_seconds"`
+	// SkipSecurityScan disables fetching the Hugging Face security scan tree.
+	// When false (default) security scan data is embedded in each generated BOM.
+	SkipSecurityScan bool `json:"skip_security_scan"`
 }
 
 // GeneratedBOM holds the AIBOM produced for a single model.

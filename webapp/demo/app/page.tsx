@@ -10,6 +10,7 @@ import { GeneratePanel } from "@/components/panels/generate-panel";
 import { CompletenessPanel } from "@/components/panels/completeness-panel";
 import { ValidatePanel } from "@/components/panels/validate-panel";
 import { MergeAibomsPanel } from "@/components/panels/merge-aiboms-panel";
+import { VulnScanPanel } from "@/components/panels/vuln-scan-panel";
 import { api } from "@/lib/api";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { CheckCircle2, Info, Shield, FileText, Cpu, XCircle } from "lucide-react";
@@ -196,10 +197,11 @@ export default function Home() {
             variant="default"
           >
             {[
-              { value: "generate", label: "Generate" },
+              { value: "generate",     label: "Generate" },
               { value: "completeness", label: "Completeness" },
-              { value: "validate", label: "Validate" },
+              { value: "validate",    label: "Validate" },
               { value: "merge-aiboms", label: "Merge AIBOMs + SBOM" },
+              { value: "vuln-scan",   label: "Vulnerability Scan" },
             ].map(({ value, label }) => (
               <TabsTrigger
                 key={value}
@@ -281,7 +283,25 @@ export default function Home() {
               </CardContent>
             </Card>
           </TabsContent>
-        </Tabs>
+          {/* ── Vulnerability Scan ─────────────────────────────────────────── */}
+          <TabsContent value="vuln-scan">
+            <Card>
+              <CardHeader>
+                <CardTitle>Vulnerability Scan</CardTitle>
+                <CardDescription>
+                  Fetch per-file security scan results from the Hugging Face Hub for every model and
+                  dataset component in an AIBOM. Scanners: Cisco ClamAV, ProtectAI, HuggingFace Pickle
+                  Scanner, VirusTotal, and JFrog Research. Optionally inject findings back into the BOM
+                  as CycloneDX Vulnerabilities.
+                  <br />
+                  <span className="font-mono text-xs text-muted-foreground">POST /api/v1/vuln-scan</span>
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <VulnScanPanel />
+              </CardContent>
+            </Card>
+          </TabsContent>        </Tabs>
       </main>
 
       {/* ── Footer ───────────────────────────────────────────────── */}

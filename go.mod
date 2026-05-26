@@ -3,9 +3,9 @@ module github.com/CRA-tools/aibomgen-cli-dashboard
 go 1.25.8
 
 require (
-	github.com/CycloneDX/cyclonedx-go v0.10.0
+	github.com/CycloneDX/cyclonedx-go v0.11.0
 	github.com/gin-gonic/gin v1.12.0
-	github.com/idlab-discover/aibomgen-cli v0.2.1
+	github.com/idlab-discover/aibomgen-cli v0.2.2-0.20260526072908-2e0f65b14d32
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.1
 	github.com/swaggo/swag v1.16.6
@@ -53,7 +53,7 @@ require (
 	golang.org/x/mod v0.34.0 // indirect
 	golang.org/x/net v0.52.0 // indirect
 	golang.org/x/sync v0.20.0 // indirect
-	golang.org/x/sys v0.42.0 // indirect
+	golang.org/x/sys v0.43.0 // indirect
 	golang.org/x/text v0.35.0 // indirect
 	golang.org/x/tools v0.43.0 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect

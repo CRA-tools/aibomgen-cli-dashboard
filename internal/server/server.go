@@ -70,6 +70,16 @@ func New() *gin.Engine {
 		// workflow when integrating AI/ML metadata into an existing
 		// software BOM.
 		v1.POST("/merge/aiboms-with-sbom", handlers.MergeAIBOMsWithSBOM)
+
+		// ------------------------------------------------------------------
+		// Vuln-scan
+		// ------------------------------------------------------------------
+		// POST /api/v1/vuln-scan
+		// Upload a CycloneDX AIBOM and receive per-file security scan
+		// results from the Hugging Face Hub (ClamAV, ProtectAI, Pickle
+		// Scanner, VirusTotal, JFrog). Optionally enriches the BOM with
+		// the findings as CycloneDX Vulnerabilities.
+		v1.POST("/vuln-scan", handlers.VulnScan)
 	}
 
 	return r

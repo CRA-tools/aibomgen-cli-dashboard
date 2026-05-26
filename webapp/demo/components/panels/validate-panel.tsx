@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { FilePicker } from "@/components/file-picker";
 import { useApiCall } from "@/hooks/use-api-call";
 import { api } from "@/lib/api";
@@ -144,13 +143,13 @@ export function ValidatePanel() {
                   return allErrors.length === 0 ? (
                     <p className="text-xs text-emerald-600 px-1">No errors</p>
                   ) : (
-                    <ScrollArea className="max-h-32">
-                      <ul className="rounded-md bg-destructive/10 p-2 space-y-1">
+                    <div className="max-h-32 overflow-y-auto rounded-md bg-destructive/10 p-2">
+                      <ul className="space-y-1">
                         {allErrors.map((m, i) => (
                           <li key={i} className="text-xs text-destructive">{m}</li>
                         ))}
                       </ul>
-                    </ScrollArea>
+                    </div>
                   );
                 })()}
               </div>
@@ -164,13 +163,13 @@ export function ValidatePanel() {
                 return allWarnings.length > 0 ? (
                   <div className="space-y-1">
                     <p className="text-xs font-medium text-muted-foreground">Warnings</p>
-                    <ScrollArea className="max-h-32">
-                      <ul className="rounded-md bg-amber-50 dark:bg-amber-950/30 p-2 space-y-1">
+                    <div className="max-h-32 overflow-y-auto rounded-md bg-amber-50 dark:bg-amber-950/30 p-2">
+                      <ul className="space-y-1">
                         {allWarnings.map((m, i) => (
                           <li key={i} className="text-xs text-amber-700">{m}</li>
                         ))}
                       </ul>
-                    </ScrollArea>
+                    </div>
                   </div>
                 ) : null;
               })()}

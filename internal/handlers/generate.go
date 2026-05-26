@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/CRA-tools/aibomgen-cli-dashboard/internal/bomutil"
 	"github.com/CRA-tools/aibomgen-cli-dashboard/internal/dto"
+	"github.com/gin-gonic/gin"
 	"github.com/idlab-discover/aibomgen-cli/pkg/aibomgen/generator"
 )
 
@@ -37,8 +37,9 @@ func GenerateFromModelIDs(c *gin.Context) {
 	timeout := resolveTimeout(req.TimeoutSeconds)
 
 	opts := generator.GenerateOptions{
-		HFToken: req.HFToken,
-		Timeout: timeout,
+		HFToken:          req.HFToken,
+		Timeout:          timeout,
+		SkipSecurityScan: req.SkipSecurityScan,
 	}
 
 	discovered, err := generator.BuildFromModelIDs(req.ModelIDs, opts)

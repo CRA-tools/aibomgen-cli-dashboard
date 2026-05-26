@@ -19,6 +19,7 @@ export interface GenerateFromModelIDsRequest {
   model_ids: string[];
   hf_token?: string;
   timeout_seconds?: number;
+  skip_security_scan?: boolean;
 }
 
 export interface GeneratedBOM {
@@ -73,6 +74,30 @@ export interface ValidateResponse {
   missing_required: string[];
   missing_optional: string[];
   dataset_results?: Record<string, DatasetValidateResult>;
+}
+
+// ── Vuln-scan ─────────────────────────────────────────────────────────────────
+
+export interface VulnerabilityFinding {
+  id: string;
+  source?: string;
+  severity?: string;
+  description?: string;
+}
+
+export interface ComponentVulnScanResult {
+  component_ref: string;
+  model_id: string;
+  vulnerability_count: number;
+  vulnerabilities: VulnerabilityFinding[];
+  scan_entries_count: number;
+  error?: string;
+}
+
+export interface VulnScanResponse {
+  components: ComponentVulnScanResult[];
+  total_vulnerabilities: number;
+  enriched_bom?: Record<string, unknown>;
 }
 
 // ── Merge ─────────────────────────────────────────────────────────────────────

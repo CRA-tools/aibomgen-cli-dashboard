@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { FilePicker } from "@/components/file-picker";
 import { ScoreBar } from "@/components/score-bar";
 import { useApiCall } from "@/hooks/use-api-call";
@@ -96,15 +95,15 @@ function FieldList({
   return (
     <div className="space-y-1.5">
       <p className="text-xs font-medium text-muted-foreground">{title}</p>
-      <ScrollArea className="max-h-32">
-        <div className="flex flex-wrap gap-1.5 pr-2">
+      <div className="max-h-32 overflow-y-auto pr-1">
+        <div className="flex flex-wrap gap-1.5">
           {fields.map((f) => (
             <Badge key={f} variant={variant} className="text-xs font-mono font-normal">
               {f}
             </Badge>
           ))}
         </div>
-      </ScrollArea>
+      </div>
     </div>
   );
 }
